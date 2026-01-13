@@ -1,6 +1,10 @@
 # Miro AI Developer Tools
 
+[![Documentation](https://img.shields.io/badge/docs-developers.miro.com-blue)](https://developers.miro.com/docs/mcp-intro)
+
 Official Miro AI developer tools and integrations. Connect AI agents to your Miro boards using the Model Context Protocol (MCP).
+
+![Miro MCP Demo](https://files.readme.io/c19a5d466d272ffb9f7e8f5c86963ac6e7b3d85fa84a2d2ddcfeb4202f02623e-Cursor-prompts.gif)
 
 ---
 
@@ -9,14 +13,14 @@ Official Miro AI developer tools and integrations. Connect AI agents to your Mir
 > **If your organization is on a Miro Enterprise plan, your admin must enable the MCP Server before you can connect.**
 >
 > 1. Ask your Miro admin to enable MCP Server for your organization
-> 2. Admins: Follow the [Miro MCP Server Admin Guide](https://help.miro.com/hc/en-us/articles/31625761037202-Miro-MCP-Server-admin-guide) to enable it
-> 3. Review the [Beta Acknowledgement](https://help.miro.com/hc/en-us/articles/31621611644306-Miro-MCP-Server-Beta-Acknowledgement) for terms and conditions
+> 2. Admins: Follow the [Miro MCP Server Admin Guide](https://help.miro.com/hc/en-us/articles/31625761037202-Miro-MCP-Server-admin-guide?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) to enable it
+> 3. Review the [Beta Acknowledgement](https://help.miro.com/hc/en-us/articles/31621611644306-Miro-MCP-Server-Beta-Acknowledgement?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) for terms and conditions
 >
-> **Not on Enterprise?** You can connect directly — skip to [Quick Start](#quick-start).
+> **Not on Enterprise?** You can connect directly — skip to [Quick Start](https://github.com/miroapp/miro-ai#quick-start?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb).
 
 ---
 
-> **Beta Release**: Miro's MCP Server is currently in beta. Features and user experience may change in future releases. [Share your feedback](https://forms.gle/feedback).
+> **Beta Release**: Miro's MCP Server is currently in beta. Features and user experience may change in future releases. [Share your feedback](https://q2oeb0jrhgi.typeform.com/to/YATmJPVx?typeform-source=developers.miro.com).
 
 ## What is Miro MCP?
 
@@ -156,7 +160,7 @@ This automatically configures the MCP server connection. After installation, res
 
 Once connected, you'll have access to Miro MCP tools and prompts. See the full list in our documentation:
 
-- [Miro MCP Tools & Prompts](https://developers.miro.com/docs/miro-mcp-prompts)
+- [Miro MCP Tools & Prompts](https://developers.miro.com/docs/miro-mcp-prompts?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb)
 
 ### Example Prompts
 
@@ -178,9 +182,9 @@ Learn how to use Miro MCP with these step-by-step tutorials:
 
 | Tutorial | Description |
 |----------|-------------|
-| [Generate Diagrams from Code](https://developers.miro.com/docs/tutorial-how-to-generate-diagrams-from-code-w-miro-mcp-vscode-github-copilot) | VSCode + GitHub Copilot |
-| [Build a Node.js App from Miro](https://developers.miro.com/docs/tutorial-build-a-nodejs-app-from-a-miro-board-with-miro-mcp-cursor) | Cursor |
-| [Build a Landing Page](https://developers.miro.com/docs/tutorial-how-to-build-a-landing-page-from-a-miro-board-w-lovable-miro-mcp) | Lovable |
+| [Generate Diagrams from Code](https://developers.miro.com/docs/tutorial-how-to-generate-diagrams-from-code-w-miro-mcp-vscode-github-copilot?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) | VSCode + GitHub Copilot |
+| [Build a Node.js App from Miro](https://developers.miro.com/docs/tutorial-build-a-nodejs-app-from-a-miro-board-with-miro-mcp-cursor?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) | Cursor |
+| [Build a Landing Page](https://developers.miro.com/docs/tutorial-build-a-nodejs-app-from-a-miro-board-with-miro-mcp-cursor?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) | Lovable |
 
 ### Video Tutorials
 
@@ -190,9 +194,9 @@ Watch our [Miro MCP YouTube Playlist](https://www.youtube.com/playlist?list=PLmi
 
 If you're on a Miro Enterprise plan, your admin must enable MCP Server before you can use it.
 
-**For Admins**: See the [Miro MCP Server Admin Guide](https://help.miro.com/hc/en-us/articles/31625761037202-Miro-MCP-Server-admin-guide) for setup instructions.
+**For Admins**: See the [Miro MCP Server Admin Guide](https://help.miro.com/hc/en-us/articles/31625761037202-Miro-MCP-Server-admin-guide?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) for setup instructions.
 
-**Beta Acknowledgement**: Review the [Beta Acknowledgement](https://help.miro.com/hc/en-us/articles/31621611644306-Miro-MCP-Server-Beta-Acknowledgement) for terms and conditions.
+**Beta Acknowledgement**: Review the [Beta Acknowledgement](https://help.miro.com/hc/en-us/articles/31621611644306-Miro-MCP-Server-Beta-Acknowledgement?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) for terms and conditions.
 
 ## Security
 
@@ -224,17 +228,18 @@ Use [MCP Inspector](https://github.com/modelcontextprotocol/inspector) for detai
 
 | Resource | Link |
 |----------|------|
-| MCP Overview | [developers.miro.com/docs/miro-mcp](https://developers.miro.com/docs/miro-mcp) |
-| Connection Guide | [developers.miro.com/docs/connecting-to-miro-mcp](https://developers.miro.com/docs/connecting-to-miro-mcp) |
-| Tools & Prompts | [developers.miro.com/docs/miro-mcp-prompts](https://developers.miro.com/docs/miro-mcp-prompts) |
-| Client Setup | [developers.miro.com/docs/connecting-miro-mcp-to-ai-coding-tools](https://developers.miro.com/docs/connecting-miro-mcp-to-ai-coding-tools) |
-| Admin Guide | [help.miro.com](https://help.miro.com/hc/en-us/articles/31625761037202-Miro-MCP-Server-admin-guide) |
+| MCP Intro | [developers.miro.com/docs/mcp-intro](https://developers.miro.com/docs/mcp-intro?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) |
+| MCP Overview | [developers.miro.com/docs/miro-mcp](https://developers.miro.com/docs/miro-mcp?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) |
+| Connection Guide | [developers.miro.com/docs/connecting-to-miro-mcp](https://developers.miro.com/docs/connecting-to-miro-mcp?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) |
+| Tools & Prompts | [developers.miro.com/docs/miro-mcp-prompts](https://developers.miro.com/docs/miro-mcp-prompts?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) |
+| Client Setup | [developers.miro.com/docs/connecting-miro-mcp-to-ai-coding-tools](https://developers.miro.com/docs/connecting-miro-mcp-to-ai-coding-tools?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) |
+| Admin Guide | [help.miro.com](https://help.miro.com/hc/en-us/articles/31625761037202-Miro-MCP-Server-admin-guide?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb) |
 
 ## Feedback & Support
 
 - **Feature Requests & Bugs**: [Open an issue](https://github.com/miroapp/miro-ai/issues)
-- **Feedback Form**: [Share your feedback](https://forms.gle/feedback)
-- **Community**: [Miro Developer Community](https://community.miro.com/)
+- **Feedback Form**: [Share your feedback](https://q2oeb0jrhgi.typeform.com/to/YATmJPVx?typeform-source=developers.miro.com?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb)
+- **Community**: [Miro Developer Community](https://community.miro.com/?utm_campaign=glb-27q1-nsp-pn-c2_akc-miro-mcp-launch-no-sl&utm_source=partner-sourced&utm_medium=partner&utm_term=github-oss-mcp-registry&src=-partner_glb)
 
 ## License
 
