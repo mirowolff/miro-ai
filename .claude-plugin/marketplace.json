@@ -46,6 +46,12 @@
         "mcp",
         "workspace"
       ]
+    },
+    {
+      "name": "miro-tasks",
+      "description": "Your progress should live on a Miro board",
+      "source": "./claude-plugins/miro-tasks",
+      "category": "development"
     }
   ]
 }
