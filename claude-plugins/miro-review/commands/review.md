@@ -1,13 +1,12 @@
 ---
-name: miro-review
 description: Generate visual code review on Miro board from GitHub PR or local changes
 argument-hint: "<board-url> <pr|owner/repo#pr|PR-URL|--local|--branch name>"
-allowed-tools: Bash(gh:*), Bash(git:*), mcp__plugin_miro_miro__*
+allowed-tools: Bash(gh:*), Bash(git:*), mcp__miro__*, mcp__glean_default__*
 ---
 
-# Miro Review Skill
+# Visual Code Review
 
-Generate a visual code review summary on a Miro board from GitHub PRs, local changes, or branch comparisons.
+Generate a comprehensive visual code review on a Miro board from GitHub PRs, local changes, or branch comparisons. Optionally enriches the review with related documentation from enterprise knowledge bases.
 
 ## Arguments
 
@@ -56,7 +55,27 @@ git log main..HEAD --oneline
 git diff main...HEAD
 ```
 
-### 3. Analyze Changes
+### 3. Gather Context (Optional Enhancement)
+
+**If Glean MCP is available**, search for related documentation:
+- Design documents related to the changed components
+- Past reviews of similar areas
+- Architecture Decision Records (ADRs)
+- Related incident reports or bug tickets
+
+Use `mcp__glean_default__search` with queries based on:
+- File paths being changed (e.g., "authentication service")
+- PR title and description keywords
+- Component/module names
+
+This context helps identify:
+- Relevant documentation to link in the review
+- Subject matter experts to tag
+- Historical context for the changes
+
+**If Glean is NOT available**, proceed with code-only analysis.
+
+### 4. Analyze Changes
 
 For each changed file, determine:
 - **Status**: Added, Modified, or Deleted
@@ -66,8 +85,9 @@ For each changed file, determine:
   - Low: Tests, documentation, styling, localization
 - **Change Summary**: Brief description of what changed
 - **Review Notes**: Key points for human reviewer to verify
+- **Related Docs**: Links to relevant documentation (from Glean if available)
 
-### 4. Create Miro Board Content
+### 5. Create Miro Board Content
 
 Scale the review based on PR complexity. Create multiple elements as needed.
 
@@ -85,7 +105,7 @@ Scale the review based on PR complexity. Create multiple elements as needed.
 | Large | 16+ | Multiple summary docs (by area), 1 table, multiple diagrams |
 
 #### File Changes Table (created first, at board center)
-Use `mcp__plugin_miro_miro__table_create` with columns:
+Use `mcp__miro__table_create` with columns:
 
 | Column | Type | Options |
 |--------|------|---------|
@@ -95,14 +115,14 @@ Use `mcp__plugin_miro_miro__table_create` with columns:
 | Risk | select | Low (#00FF00), Medium (#FFA500), High (#FF0000) |
 | Notes | text | Review points |
 
-Then use `mcp__plugin_miro_miro__table_sync_rows` to populate rows with file data.
+Then use `mcp__miro__table_sync_rows` to populate rows with file data.
 
 For very large PRs (30+ files), consider creating separate tables:
 - High-risk files table (requires detailed review)
 - Standard changes table (routine changes)
 
 #### Summary Documents
-Use `mcp__plugin_miro_miro__doc_create` with markdown content.
+Use `mcp__miro__doc_create` with markdown content.
 
 **Main Summary (x=-2000, y=0):**
 ```markdown
@@ -117,6 +137,9 @@ Use `mcp__plugin_miro_miro__doc_create` with markdown content.
 
 ## Key Changes
 - [Bullet points of significant changes]
+
+## Related Documentation
+- [Links to relevant docs from Glean, if found]
 
 ## Review Checklist
 - [ ] Logic correctness verified
@@ -135,7 +158,7 @@ Use `mcp__plugin_miro_miro__doc_create` with markdown content.
 - Breaking changes documentation
 
 #### Architecture Diagrams
-Use `mcp__plugin_miro_miro__diagram_create`. Create multiple diagrams for complex changes.
+Use `mcp__miro__diagram_create`. Create multiple diagrams for complex changes.
 
 **Diagram type selection:**
 - **Feature additions** → `flowchart` showing component interactions
@@ -158,19 +181,19 @@ Each diagram should show:
 
 ```
 # PR in current repo
-/miro-review https://miro.com/app/board/abc123= 42
+/miro-review:review https://miro.com/app/board/abc123= 42
 
 # PR from external repo (short format)
-/miro-review https://miro.com/app/board/abc123= facebook/react#12345
+/miro-review:review https://miro.com/app/board/abc123= facebook/react#12345
 
 # PR from external repo (full URL)
-/miro-review https://miro.com/app/board/abc123= https://github.com/vercel/next.js/pull/789
+/miro-review:review https://miro.com/app/board/abc123= https://github.com/vercel/next.js/pull/789
 
 # Local uncommitted changes
-/miro-review https://miro.com/app/board/abc123= --local
+/miro-review:review https://miro.com/app/board/abc123= --local
 
 # Compare branch against main
-/miro-review https://miro.com/app/board/abc123= --branch feature-login
+/miro-review:review https://miro.com/app/board/abc123= --branch feature-login
 ```
 
 ## Output
@@ -179,3 +202,4 @@ After completion, provide:
 1. Link to the Miro board
 2. Summary of what was created
 3. Highlight any high-risk files that need careful review
+4. List of related documentation found (if Glean was used)
