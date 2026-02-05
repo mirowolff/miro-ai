@@ -1,7 +1,7 @@
 {
   "name": "miro-ai",
-  "version": "1.0.0",
-  "description": "Official Miro plugins for Claude Code",
+  "version": "1.1.0",
+  "description": "Official Miro plugins for Claude Code with visual code review capabilities",
   "owner": {
     "name": "Miro",
     "email": "support@miro.com"
@@ -9,10 +9,10 @@
   "plugins": [
     {
       "name": "miro",
-      "description": "Secure access to Miro boards. Enables AI to read board context, create diagrams, and generate code with enterprise-grade security.",
+      "description": "Secure access to Miro boards. Enables AI to read board context, create diagrams, generate code, and create visual code reviews with enterprise-grade security.",
       "source": "./claude-plugins/miro",
       "category": "productivity",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Miro",
         "email": "support@miro.com"
@@ -34,7 +34,10 @@
         "architecture-diagrams",
         "mcp",
         "visual-collaboration",
-        "code-generation"
+        "code-generation",
+        "code-review",
+        "ai-review",
+        "pr-review"
       ],
       "tags": [
         "productivity",
@@ -44,7 +47,8 @@
         "diagramming",
         "ai",
         "mcp",
-        "workspace"
+        "workspace",
+        "code-review"
       ]
     }
   ]
