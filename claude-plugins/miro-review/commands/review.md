@@ -6,7 +6,7 @@ allowed-tools: Bash(gh:*), Bash(git:*), mcp__miro__*, mcp__glean_default__*
 
 # Visual Code Review
 
-Generate a comprehensive visual code review on a Miro board from GitHub PRs, local changes, or branch comparisons. Optionally enriches the review with related documentation from enterprise knowledge bases.
+Generate a comprehensive visual code review on a Miro board from GitHub PRs, local changes, or branch comparisons. Includes architecture analysis, security review, and optionally enriches with enterprise documentation.
 
 ## Arguments
 
@@ -58,88 +58,117 @@ git diff main...HEAD
 ### 3. Gather Context (Optional Enhancement)
 
 **If Glean MCP is available**, search for related documentation:
-- Design documents related to the changed components
-- Past reviews of similar areas
-- Architecture Decision Records (ADRs)
-- Related incident reports or bug tickets
+- Design documents and ADRs for changed components
+- Security policies and guidelines
+- Past reviews and incidents in affected areas
+- Compliance requirements
 
 Use `mcp__glean_default__search` with queries based on:
-- File paths being changed (e.g., "authentication service")
+- File paths being changed
 - PR title and description keywords
 - Component/module names
-
-This context helps identify:
-- Relevant documentation to link in the review
-- Subject matter experts to tag
-- Historical context for the changes
-
-**If Glean is NOT available**, proceed with code-only analysis.
 
 ### 4. Analyze Changes
 
 For each changed file, determine:
+
+**Basic Analysis:**
 - **Status**: Added, Modified, or Deleted
-- **Risk Level**:
-  - High: Security-related, authentication, database migrations, core business logic
-  - Medium: API changes, configuration, shared utilities
-  - Low: Tests, documentation, styling, localization
-- **Change Summary**: Brief description of what changed
-- **Review Notes**: Key points for human reviewer to verify
-- **Related Docs**: Links to relevant documentation (from Glean if available)
+- **Change Summary**: Brief description combining what changed and review points
+- **Risk Level**: See risk assessment below
 
-### 5. Create Miro Board Content
+**Architecture Analysis:**
+- New components or modules introduced
+- Dependency changes (new imports, package updates)
+- Interface/API modifications
+- Pattern changes (design patterns introduced or violated)
+- Breaking changes requiring consumer updates
 
-Scale the review based on PR complexity. Create multiple elements as needed.
+**Security Analysis:**
+- Input validation and sanitization
+- Authentication/authorization changes
+- Sensitive data handling (logging, storage)
+- Injection vulnerabilities (SQL, XSS, command)
+- Cryptography usage
+- Configuration security
+
+### 5. Risk Assessment
+
+| Risk Level | Criteria |
+|------------|----------|
+| **High** | Security-sensitive, auth/authz, database migrations, core business logic, breaking API changes, cryptography |
+| **Medium** | API changes, configuration, shared utilities, new dependencies, data model changes |
+| **Low** | Tests, documentation, styling, localization, internal refactoring |
+
+### 6. Create Miro Board Content
+
+**IMPORTANT: Scale content based on PR size.** Create multiple documents and diagrams for larger PRs.
 
 **Positioning Notes:**
-- Tables do not support x/y positioning and are created at the board center (0,0)
-- Create tables first, then position other elements around them
-- Use a grid layout for large PRs: increment x by 2000 for horizontal spacing, y by 1500 for vertical spacing
+
+Use a **horizontal row layout** because tables and docs have fixed width but variable height, while diagrams are more complex:
+
+```
+[Table] → [Doc1] → [Doc2] → [Doc3] → [Diagram1] → [Diagram2]
+  x=0      x=1200   x=2000   x=2800     x=3600       x=5600
+```
+
+- **Tables**: Created at board center (0,0) - no x/y positioning support
+- **Documents**: Start at x=1200, increment by 800 for each doc
+- **Diagrams**: Continue after last doc position add extra 400, increment by 2000 for each diagram
+- All items at y=0 (same row)
 
 #### Scaling Guidelines
 
-| PR Size | Files | Recommended Elements |
-|---------|-------|---------------------|
-| Small | 1-5 | 1 summary doc, 1 table, 1 diagram |
-| Medium | 6-15 | 1 summary doc, 1 table, 2-3 diagrams (by subsystem) |
-| Large | 16+ | Multiple summary docs (by area), 1 table, multiple diagrams |
+| PR Size | Files | Documents | Diagrams |
+|---------|-------|-----------|----------|
+| Small | 1-5 | 1 summary | 1 flow diagram |
+| Medium | 6-15 | 2 docs (summary + deep-dive) | 2-3 diagrams |
+| Large | 16-30 | 3 docs (summary + architecture + security) | 3-4 diagrams |
+| Very Large | 30+ | 4+ docs (by subsystem/area) | 5+ diagrams |
 
-#### File Changes Table (created first, at board center)
-Use `mcp__miro__table_create` with columns:
+---
+
+#### File Changes Table
+
+Create first (appears at board center). Use `mcp__miro__table_create` with columns **in this order**:
 
 | Column | Type | Options |
 |--------|------|---------|
-| File | text | - |
-| Change | text | Brief description |
 | Status | select | Added (#00FF00), Modified (#FFA500), Deleted (#FF0000) |
+| File | text | File path |
+| Change | text | Brief summary of changes and key review points |
 | Risk | select | Low (#00FF00), Medium (#FFA500), High (#FF0000) |
-| Notes | text | Review points |
 
-Then use `mcp__miro__table_sync_rows` to populate rows with file data.
+For very large PRs (30+ files), create separate tables:
+- High-risk changes table
+- Standard changes table
 
-For very large PRs (30+ files), consider creating separate tables:
-- High-risk files table (requires detailed review)
-- Standard changes table (routine changes)
+---
 
-#### Summary Documents
-Use `mcp__miro__doc_create` with markdown content.
+#### Documents
 
-**Main Summary (x=-2000, y=0):**
+**Document 1: Main Summary (x=800, y=0)**
+
+Always create this document:
+
 ```markdown
-# Code Review: [PR Title or Branch Name]
+# Code Review: [PR Title]
 
 **Author:** [author]
 **Files Changed:** [count]
 **Lines:** +[additions] / -[deletions]
 
+---
+
 ## Overview
-[Brief description of what this change does]
+[2-3 sentences describing what this change does]
 
 ## Key Changes
 - [Bullet points of significant changes]
 
-## Related Documentation
-- [Links to relevant docs from Glean, if found]
+## High-Risk Areas
+- [Files/components requiring careful review]
 
 ## Review Checklist
 - [ ] Logic correctness verified
@@ -149,33 +178,126 @@ Use `mcp__miro__doc_create` with markdown content.
 - [ ] Tests adequate
 
 ## Questions for Author
-- [Any clarifying questions based on the diff]
+- [Clarifying questions based on the diff]
 ```
 
-**Additional docs for large PRs** (positioned at y=1500, y=3000, etc.):
-- Per-subsystem deep dives (e.g., "API Changes", "Database Migrations", "UI Updates")
-- Security-focused analysis for high-risk changes
-- Breaking changes documentation
+**Document 2: Architecture Analysis (x=1600, y=0)**
 
-#### Architecture Diagrams
-Use `mcp__miro__diagram_create`. Create multiple diagrams for complex changes.
+Create for Medium+ PRs or when structural changes detected:
 
-**Diagram type selection:**
-- **Feature additions** → `flowchart` showing component interactions
-- **Refactoring** → `uml_class` showing structural changes
-- **API/integration changes** → `uml_sequence` showing interaction flow
-- **Database changes** → `entity_relationship` showing schema modifications
-- **Bug fixes** → `flowchart` showing fix location in flow
+```markdown
+# Architecture Analysis
 
-**For large PRs, create separate diagrams:**
-- Overall architecture impact (x=2000, y=0)
-- Per-subsystem flows (x=2000, y=1500; x=2000, y=3000; etc.)
-- Data flow diagram if multiple services affected (x=4000, y=0)
+## Structural Changes
 
-Each diagram should show:
-- Which components/modules are affected
-- How data or control flows through the changed code
+### New Components
+- [List new modules, services, classes]
+
+### Modified Interfaces
+- [API changes, contract modifications]
+
+### Dependency Changes
+- [New, removed, or updated dependencies]
+
+## Design Patterns
+- [Patterns introduced or modified]
+- [Anti-patterns identified]
+
+## Breaking Changes
+- [Changes requiring consumer updates]
+- [Migration requirements]
+
+## Architecture Concerns
+- [Coupling/cohesion issues]
+- [Layer violations]
+- [Scalability implications]
+```
+
+**Document 3: Security Analysis (x=2400, y=0)**
+
+Create for Large+ PRs or when security-sensitive code detected:
+
+```markdown
+# Security Analysis
+
+**Risk Score:** [Critical/High/Medium/Low]
+
+## Security-Sensitive Changes
+- [Auth/authz modifications]
+- [Data handling changes]
+- [API exposure changes]
+
+## Vulnerability Assessment
+
+### Input Validation
+- [Validation present/missing]
+
+### Data Protection
+- [Sensitive data handling]
+- [Encryption usage]
+
+### Access Control
+- [Authorization checks]
+
+## Security Checklist
+- [ ] Input validation present
+- [ ] Output encoding applied
+- [ ] Authentication verified
+- [ ] Authorization checks in place
+- [ ] Sensitive data protected
+- [ ] No hardcoded secrets
+- [ ] Dependencies secure
+
+## Recommendations
+- [Security improvements needed]
+```
+
+**Additional Documents (x=3200, x=4000, etc.)**
+
+For Very Large PRs, create per-subsystem documents (continue incrementing x by 800):
+- "API Changes Analysis"
+- "Database Migration Review"
+- "UI/Frontend Changes"
+- etc.
+
+---
+
+#### Diagrams
+
+Create diagrams based on the type of changes. Position after the last document (continue x increments of 800).
+
+**Diagram Selection Guide:**
+
+| Change Type | Diagram Type | Purpose |
+|-------------|--------------|---------|
+| Feature addition | `flowchart` | Show component interactions |
+| Refactoring | `uml_class` | Show structural changes |
+| API/integration | `uml_sequence` | Show interaction flow |
+| Database changes | `entity_relationship` | Show schema modifications |
+| Bug fix | `flowchart` | Show fix location in flow |
+| Data pipeline | `flowchart` | Show data flow |
+
+**Diagram Positions:**
+
+Position diagrams after the last document. For a typical Large PR with 3 docs:
+
+| Diagram | Position | When to Create |
+|---------|----------|----------------|
+| Main flow/architecture | x=3200, y=0 | Always |
+| Component relationships | x=4000, y=0 | Medium+ PRs |
+| Sequence/interaction | x=4800, y=0 | API changes |
+| Data flow | x=5600, y=0 | Data pipeline changes |
+| Before/after comparison | x=6400, y=0 | Major refactoring |
+
+Adjust starting x based on actual number of documents created.
+
+**Each diagram should show:**
+- Affected components/modules (highlighted)
+- Data/control flow through changed code
 - Dependencies between changed files
+- Trust boundaries (for security-relevant changes)
+
+---
 
 ## Example Usage
 
@@ -200,6 +322,8 @@ Each diagram should show:
 
 After completion, provide:
 1. Link to the Miro board
-2. Summary of what was created
-3. Highlight any high-risk files that need careful review
-4. List of related documentation found (if Glean was used)
+2. Summary of elements created (X docs, Y diagrams, Z table rows)
+3. High-risk files requiring careful review
+4. Security findings (if any critical/high)
+5. Architecture concerns (if any breaking changes)
+6. Related documentation found (if Glean was used)
