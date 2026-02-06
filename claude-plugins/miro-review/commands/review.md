@@ -1,7 +1,7 @@
 ---
 description: Generate visual code review on Miro board from GitHub PR or local changes
 argument-hint: "<board-url> <pr|owner/repo#pr|PR-URL|--local|--branch name>"
-allowed-tools: Bash(gh:*), Bash(git:*), mcp__miro__*, mcp__glean_default__*
+allowed-tools: Bash(gh:*), Bash(git:*), mcp__miro__*
 ---
 
 # Visual Code Review
@@ -55,20 +55,7 @@ git log main..HEAD --oneline
 git diff main...HEAD
 ```
 
-### 3. Gather Context (Optional Enhancement)
-
-**If Glean MCP is available**, search for related documentation:
-- Design documents and ADRs for changed components
-- Security policies and guidelines
-- Past reviews and incidents in affected areas
-- Compliance requirements
-
-Use `mcp__glean_default__search` with queries based on:
-- File paths being changed
-- PR title and description keywords
-- Component/module names
-
-### 4. Analyze Changes
+### 3. Analyze Changes
 
 For each changed file, determine:
 
@@ -92,7 +79,7 @@ For each changed file, determine:
 - Cryptography usage
 - Configuration security
 
-### 5. Risk Assessment
+### 4. Risk Assessment
 
 | Risk Level | Criteria |
 |------------|----------|
@@ -100,7 +87,7 @@ For each changed file, determine:
 | **Medium** | API changes, configuration, shared utilities, new dependencies, data model changes |
 | **Low** | Tests, documentation, styling, localization, internal refactoring |
 
-### 6. Create Miro Board Content
+### 5. Create Miro Board Content
 
 **IMPORTANT: Scale content based on PR size.** Create multiple documents and diagrams for larger PRs.
 
@@ -326,4 +313,3 @@ After completion, provide:
 3. High-risk files requiring careful review
 4. Security findings (if any critical/high)
 5. Architecture concerns (if any breaking changes)
-6. Related documentation found (if Glean was used)

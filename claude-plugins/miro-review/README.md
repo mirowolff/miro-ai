@@ -6,7 +6,6 @@ Visual code reviews on Miro boards. Generates comprehensive review artifacts fro
 
 - **Multiple Review Types**: Standard, security-focused, and architecture-focused reviews
 - **Visual Artifacts**: Tables, documents, and diagrams created on Miro boards
-- **Enterprise Integration**: Optional Glean integration for related documentation
 - **Flexible Sources**: GitHub PRs, local changes, or branch comparisons
 
 ## Commands
@@ -33,7 +32,6 @@ Generate a comprehensive visual code review with file analysis, risk assessment,
 - File changes table with status and risk levels
 - Summary document with overview and checklist
 - Architecture diagrams showing component relationships
-- Related documentation links (if Glean available)
 
 ### `/miro-review:security` - Security Review
 
@@ -47,7 +45,6 @@ Security-focused analysis looking for vulnerabilities and compliance concerns.
 - Security findings table with severity ratings
 - Security summary with compliance checklist
 - Attack surface diagram
-- Links to security policies (if Glean available)
 
 ### `/miro-review:architecture` - Architecture Review
 
@@ -62,7 +59,6 @@ Architecture-focused analysis of structural changes and design patterns.
 - Architecture summary with breaking changes
 - Component diagrams (before/after for refactoring)
 - Data flow and sequence diagrams
-- Links to ADRs (if Glean available)
 
 ## MCP Integrations
 
@@ -71,15 +67,6 @@ Creates visual artifacts on Miro boards:
 - Tables for structured data
 - Documents for summaries
 - Diagrams for architecture visualization
-
-### Glean (Optional)
-Enriches reviews with enterprise context:
-- Related design documents
-- Previous code reviews
-- Architecture Decision Records (ADRs)
-- Security policies and guidelines
-
-If Glean is not available, the plugin works with code-only analysis.
 
 ## Skills
 
@@ -99,8 +86,7 @@ Knowledge base for effective code review:
 This plugin is part of the miro-ai plugins collection. To use it:
 
 1. Ensure Miro MCP is configured (authentication via OAuth)
-2. Optionally configure Glean MCP for enterprise context
-3. Use the commands with a valid Miro board URL
+2. Use the commands with a valid Miro board URL
 
 ## Output Example
 

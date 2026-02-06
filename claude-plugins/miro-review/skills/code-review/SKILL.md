@@ -66,17 +66,3 @@ Use the references in this skill for detailed risk assessment criteria:
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Integration with Enterprise Knowledge
-
-When Glean MCP is available, enrich reviews with:
-- Related design documents
-- Previous code reviews
-- ADRs and technical decisions
-- Component ownership info
-- Incident history
-
-This context helps reviewers understand:
-- Why code was originally written a certain way
-- Who to ask for clarification
-- What compliance requirements apply
-- Historical context for the component
