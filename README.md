@@ -4,10 +4,10 @@
 
 Connect AI coding assistants to your Miro boards. Create diagrams, extract context, generate code from designs, and track tasks—all through natural conversation.
 
-![Miro MCP Demo](https://github.com/user-attachments/assets/0d036147-fbc6-4102-bcbb-4af994171618)
+<video src="https://github.com/user-attachments/assets/0d036147-fbc6-4102-bcbb-4af994171618" autoplay loop muted playsinline width="100%"></video>
 ---
 
-> **Beta Release**: Miro's MCP Server is currently in beta. [Share your feedback](https://q2oeb0jrhgi.typeform.com/to/YATmJPVx).
+> [Share your feedback](https://q2oeb0jrhgi.typeform.com/to/YATmJPVx).
 
 ---
 
