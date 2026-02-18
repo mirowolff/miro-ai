@@ -4,7 +4,7 @@
 
 Connect AI coding assistants to your Miro boards. Create diagrams, extract context, generate code from designs, and track tasks—all through natural conversation. 
 
-<video src="https://github.com/user-attachments/assets/a238d4e3-c2b4-42b0-9107-fde390490ba3" autoplay loop muted playsinline width="100%"></video>
+<video src="https://github.com/user-attachments/assets/835926de-9c4e-4575-b177-0ee60da003d2" autoplay loop muted playsinline width="100%"></video>
 ---
 
 > [Share your feedback](https://q2oeb0jrhgi.typeform.com/to/YATmJPVx).
