@@ -16,6 +16,10 @@ json_result() {
   },
   "agent_browser": {
     "installed": $4
+  },
+  "mcp": {
+    "checked": false,
+    "action_required": "MUST call board_list_items(board_id=<any_board_url>, limit=1) now — this is the ONLY valid MCP test. Do NOT use context_explore (it uses narrower scopes and gives false positives). If board_list_items fails with 'Board access denied': user must remove and re-add the MCP server to re-authorize with full scopes. Any other failure: see SKILL.md preflight step 2. Do NOT proceed until board_list_items succeeds."
   }
 }
 EOF
@@ -57,6 +61,9 @@ elif [ -x "$HOME/.bun/bin/agent-browser" ]; then
 else
   echo "agent-browser: not installed" >&2
 fi
+
+# --- MCP ---
+echo "mcp: cannot verify from bash — agent MUST test via MCP tool call before proceeding" >&2
 
 # --- Output ---
 json_result "$miroctl_installed" "$miroctl_authenticated" "$miroctl_token_valid" "$agent_browser_installed"

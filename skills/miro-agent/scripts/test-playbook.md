@@ -24,11 +24,13 @@ Run preflight:
 bash scripts/preflight.sh
 ```
 
-Verify MCP with a lightweight call:
+Verify MCP with `board_list_items` (the ONLY valid MCP test — do NOT use `context_explore`):
 
 ```
 board_list_items(board_id="https://miro.com/app/board/$BOARD_ID", limit=10)
 ```
+
+If this fails with "Board access denied": **STOP** — OAuth token lacks required scopes. User must remove and re-add the MCP server to re-authorize.
 
 ---
 
@@ -59,7 +61,7 @@ miroctl frames update --board-id "$BOARD_ID" --item-id $FRAME_ID --data '{
 STICKY_ID=$(miroctl sticky-notes create --board-id "$BOARD_ID" --data '{
   "data":{"content":"Test Sticky"},
   "style":{"fillColor":"yellow"},
-  "position":{"x":100,"y":100}
+  "position":{"x":20,"y":100}
 }' | jq -r '.id')
 ```
 
@@ -74,7 +76,7 @@ SHAPE_ID=$(miroctl shapes create --board-id "$BOARD_ID" --data "{
   \"data\":{\"content\":\"Test Shape\",\"shape\":\"rectangle\"},
   \"style\":{\"fillColor\":\"$SHAPE_COLOR\"},
   \"geometry\":{\"width\":200,\"height\":100},
-  \"position\":{\"x\":300,\"y\":100}
+  \"position\":{\"x\":300,\"y\":50}
 }" | jq -r '.id')
 ```
 
@@ -85,7 +87,7 @@ SHAPE_ID=$(miroctl shapes create --board-id "$BOARD_ID" --data "{
 ```bash
 TEXT_ID=$(miroctl texts create --board-id "$BOARD_ID" --data '{
   "data":{"content":"Test Text"},
-  "position":{"x":500,"y":100}
+  "position":{"x":500,"y":90}
 }' | jq -r '.id')
 ```
 
@@ -105,6 +107,10 @@ CARD_ID=$(miroctl cards create --board-id "$BOARD_ID" --data '{
 miroctl connectors create --board-id "$BOARD_ID" --data "{
   \"startItem\":{\"id\":\"$STICKY_ID\"},
   \"endItem\":{\"id\":\"$SHAPE_ID\"}
+}"
+miroctl connectors create --board-id "$BOARD_ID" --data "{
+  \"startItem\":{\"id\":\"$STICKY_ID\"},
+  \"endItem\":{\"id\":\"$TEXT_ID\"}
 }"
 ```
 
@@ -152,6 +158,7 @@ EMBED_ID=$(miroctl embeds create --board-id "$BOARD_ID" --data '{
 ### 1.10 Screenshot + upload
 
 ```bash
+agent-browser set viewport 1400 900
 agent-browser open "https://miro.com"
 agent-browser screenshot /tmp/miro-screenshot.png
 
@@ -165,8 +172,8 @@ SCREENSHOT_ID=$(miroctl images create-image-item-using-local-file \
 
 ```bash
 URL_IMG_ID=$(miroctl images create-image-item-using-url --board-id "$BOARD_ID" --data '{
-  "data":{"url":"https://picsum.photos/200"},
-  "position":{"x":900,"y":100}
+  "data":{"url":"https://picsum.photos/400"},
+  "position":{"x":700,"y":200}
 }' | jq -r '.id')
 ```
 
@@ -175,7 +182,7 @@ URL_IMG_ID=$(miroctl images create-image-item-using-url --board-id "$BOARD_ID" -
 ### 1.12 Document file upload
 
 ```bash
-printf '%%PDF-1.0\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n190\n%%%%EOF' > /tmp/miro-test.pdf
+printf '%%PDF-1.0\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \ntrailer<</Size 5/Root 1 0 R>>\nstartxref\n190\n%%%%EOF' > /tmp/miro-test.pdf
 
 DOC_FILE_ID=$(miroctl documents create-document-item-using-file-from-device \
   --board-id "$BOARD_ID" --file /tmp/miro-test.pdf | jq -r '.id')
@@ -226,7 +233,7 @@ miroctl boards list --all
 ### 1.18 Minimum limit validation
 
 ```bash
-miroctl items get-items --board-id "$BOARD_ID" --limit 5
+miroctl items get-items --board-id "$BOARD_ID" --limit 10
 ```
 
 **Verify:** Should **fail** with exit code 5 (400 error, minimum limit is 10).
@@ -256,7 +263,7 @@ context_get(item_url="https://miro.com/app/board/$BOARD_ID/?moveToWidget=$FRAME_
 ### 2.3 board_list_items (filtered)
 
 ```
-board_list_items(board_id="$BOARD_ID", limit=50, item_type="sticky_note")
+board_list_items(board_id="$BOARD_ID", limit=10, item_type="sticky_note")
 ```
 
 **Verify:** Returns only sticky notes.
@@ -383,6 +390,12 @@ image_get_url(board_id="$BOARD_ID", item_id="$IMG_ID")
 ```bash
 miroctl boards delete --board-id "$BOARD_ID"
 rm -f /tmp/miro-test.png /tmp/miro-screenshot.png /tmp/miro-test.pdf
+```
+
+Print the message below, then a short summary of test results.
+
+```
+Test board deleted!
 ```
 
 ---

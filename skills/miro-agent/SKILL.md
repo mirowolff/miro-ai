@@ -23,27 +23,31 @@ bash scripts/preflight.sh
 
 Returns JSON with install/auth status. Handle failures:
 
-| Status | Action |
-|--------|--------|
-| miroctl not installed | `brew install miroapp-dev/tap/miroctl` |
-| miroctl no token | Ask user: "Go to https://developers.miro.com/reference/get-access-token-context, click **Get access token**, select your team, and paste the token here." Then run `miroctl auth set-token <TOKEN>` |
-| miroctl token expired | Same as above — token lasts 1 hour |
-| agent-browser not installed | `bun install -g agent-browser && agent-browser install` |
-| agent-browser not in PATH | Add `~/.bun/bin` to PATH or use full path `~/.bun/bin/agent-browser` |
+| Status                      | Action                                                                                                                                                                                              |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| miroctl not installed       | `brew install miroapp-dev/tap/miroctl`                                                                                                                                                              |
+| miroctl no token            | Ask user: "Go to https://developers.miro.com/reference/get-access-token-context, click **Get access token**, select your team, and paste the token here." Then run `miroctl auth set-token <TOKEN>` |
+| miroctl token expired       | Same as above — token lasts 1 hour                                                                                                                                                                  |
+| agent-browser not installed | `bun install -g agent-browser && agent-browser install`                                                                                                                                             |
+| agent-browser not in PATH   | Add `~/.bun/bin` to PATH or use full path `~/.bun/bin/agent-browser`                                                                                                                                |
 
 ### Step 2: Check MCP
 
-Try a lightweight MCP call to verify:
+The preflight JSON includes `"mcp": {"checked": false, ...}`. You **must** verify MCP now using `board_list_items` — this is the **only** valid test. Do NOT use `context_explore` or `context_get` — those use narrower OAuth scopes and can pass even when the token lacks read/write permissions.
 
 ```
-miro-mcp:board_list_items(board_id="<any_board_url>", limit=1)
+board_list_items(board_id="<any_board_url>", limit=1)
 ```
 
-| Result | Action |
-|--------|--------|
-| Tool not found | MCP server not configured. Guide user to add to MCP settings: `{"miro": {"type": "http", "url": "https://mcp.miro.com"}}` — then restart MCP connection |
-| Auth error | OAuth flow not completed. Ask user to restart MCP connection (triggers OAuth in browser) |
-| Success | MCP ready |
+| Result                                | Action                                                                                                                                                                                                                                                                                 |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tool not found                        | **STOP.** MCP server not configured. Tell user: _"Miro MCP server is not connected. Add this to your MCP settings and restart the connection: `{"miro": {"type": "http", "url": "https://mcp.miro.com"}}`"_                                                                            |
+| "Board access denied"                 | **STOP.** OAuth token lacks required scopes. Tell user: _"Miro MCP connected but missing board permissions. Remove the MCP server, re-add it, and restart the connection to re-authorize with full scopes. Make sure to grant board read/write access when the OAuth prompt appears."_ |
+| Auth error / 401 / 403                | **STOP.** Tell user: _"Miro MCP needs authentication. Restart the MCP connection — this will open a browser window for OAuth login."_                                                                                                                                                  |
+| Any other error                       | **STOP.** Show the error to the user and ask them to fix MCP connectivity before continuing.                                                                                                                                                                                           |
+| Success (returns items or empty list) | MCP ready — proceed.                                                                                                                                                                                                                                                                   |
+
+**STOP means:** Do not continue with any Miro operations. The skill cannot function without MCP.
 
 **Note:** The MCP tool prefix depends on the server name in the user's config. It may be `miro:`, `miro-mcp:`, or another prefix. Use whatever prefix the tools are registered under.
 
@@ -61,49 +65,49 @@ For fallback chains and overlap resolution, see [reference/tool-selection.md](re
 
 ### Routing Matrix
 
-| Content | Create | Read | Update/Delete |
-|---------|--------|------|---------------|
-| Document | MCP `doc_create` | MCP `doc_get` | MCP `doc_update` / CLI delete |
-| Diagram | MCP `diagram_create`* | MCP `context_get` | CLI delete |
-| Table | MCP `table_create` | MCP `table_list_rows` | MCP `table_sync_rows` / CLI delete |
-| Frame | CLI `frames create`** | MCP `board_list_items` or CLI | CLI `frames update` / delete |
-| Sticky note | CLI `sticky-notes create` | MCP or CLI | CLI update / delete |
-| Shape | CLI `shapes create` | MCP or CLI | CLI update / delete |
-| Card | CLI `cards create` | MCP or CLI | CLI update / delete |
-| Text | CLI `texts create` | MCP or CLI | CLI update / delete |
-| Image | CLI `images create-*` | MCP `image_get_data` | CLI update / delete |
-| Connector | CLI `connectors create` | CLI | CLI update / delete |
-| Embed | CLI `embeds create` | CLI | CLI update / delete |
-| Mind map node | CLI `mind-map-nodes create` | CLI | CLI delete |
+| Content       | Create                      | Read                          | Update/Delete                      |
+| ------------- | --------------------------- | ----------------------------- | ---------------------------------- |
+| Document      | MCP `doc_create`            | MCP `doc_get`                 | MCP `doc_update` / CLI delete      |
+| Diagram       | MCP `diagram_create`\*      | MCP `context_get`             | CLI delete                         |
+| Table         | MCP `table_create`          | MCP `table_list_rows`         | MCP `table_sync_rows` / CLI delete |
+| Frame         | CLI `frames create`\*\*     | MCP `board_list_items` or CLI | CLI `frames update` / delete       |
+| Sticky note   | CLI `sticky-notes create`   | MCP or CLI                    | CLI update / delete                |
+| Shape         | CLI `shapes create`         | MCP or CLI                    | CLI update / delete                |
+| Card          | CLI `cards create`          | MCP or CLI                    | CLI update / delete                |
+| Text          | CLI `texts create`          | MCP or CLI                    | CLI update / delete                |
+| Image         | CLI `images create-*`       | MCP `image_get_data`          | CLI update / delete                |
+| Connector     | CLI `connectors create`     | CLI                           | CLI update / delete                |
+| Embed         | CLI `embeds create`         | CLI                           | CLI update / delete                |
+| Mind map node | CLI `mind-map-nodes create` | CLI                           | CLI delete                         |
 
-*Call `diagram_get_dsl` first (once per type per session)
-**Two-step: create then update for position/size (see Gotchas)
+\*Call `diagram_get_dsl` first (once per type per session)
+\*\*Two-step: create then update for position/size (see Gotchas)
 
 ### Board-Level Operations
 
-| Task | Tool |
-|------|------|
-| Find/list boards | CLI `boards list --all` |
-| Board metadata | CLI `boards get --board-id ID` |
-| Explore board structure | MCP `context_explore` |
-| Share board | CLI `board-members share` |
-| Tags | CLI `tags create/attach` |
-| Groups | CLI `groups create/un-group` |
-| Webhooks | CLI `webhooks create/list/delete` |
-| Upload image from file | CLI `images create-image-item-using-local-file --board-id ID --file ./img.png` |
-| Upload image from URL | CLI `images create-image-item-using-url` |
-| Upload document file | CLI `documents create-document-item-using-file-from-device` |
-| Bulk create items | CLI `bulk-operations create-items` |
-| Screenshot webpage | agent-browser `open` → `wait 1000` → `screenshot` |
+| Task                    | Tool                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| Find/list boards        | CLI `boards list --all`                                                        |
+| Board metadata          | CLI `boards get --board-id ID`                                                 |
+| Explore board structure | MCP `context_explore`                                                          |
+| Share board             | CLI `board-members share`                                                      |
+| Tags                    | CLI `tags create/attach`                                                       |
+| Groups                  | CLI `groups create/un-group`                                                   |
+| Webhooks                | CLI `webhooks create/list/delete`                                              |
+| Upload image from file  | CLI `images create-image-item-using-local-file --board-id ID --file ./img.png` |
+| Upload image from URL   | CLI `images create-image-item-using-url`                                       |
+| Upload document file    | CLI `documents create-document-item-using-file-from-device`                    |
+| Bulk create items       | CLI `bulk-operations create-items`                                             |
+| Screenshot webpage      | agent-browser `open` → `wait 1000` → `screenshot`                              |
 
 ### Multi-Tool Chains
 
-| Task | Chain |
-|------|-------|
+| Task                              | Chain                                                                                                |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | Screenshot page → upload to board | agent-browser screenshot → miroctl images upload → (sleep 2) → miroctl items update to move to frame |
-| Create frame with doc + diagram | miroctl frames create+update → MCP doc_create with parent_id → MCP diagram_create with parent_id |
-| Read board → implement feature | MCP context_explore → MCP context_get on relevant items → code changes |
-| Populate board from data | miroctl frames create → MCP table_create + table_sync_rows → MCP doc_create |
+| Create frame with doc + diagram   | miroctl frames create+update → MCP doc_create with parent_id → MCP diagram_create with parent_id     |
+| Read board → implement feature    | MCP context_explore → MCP context_get on relevant items → code changes                               |
+| Populate board from data          | miroctl frames create → MCP table_create + table_sync_rows → MCP doc_create                          |
 
 ## Board ID Extraction
 
@@ -146,13 +150,13 @@ miroctl exits with code 3 on 401/403. On any auth error:
 
 If an MCP tool returns an access or server error, fall back to miroctl:
 
-| MCP failure | CLI fallback |
-|-------------|-------------|
-| `context_explore` | `miroctl items get-items --board-id ID --limit 50` |
+| MCP failure        | CLI fallback                                                                   |
+| ------------------ | ------------------------------------------------------------------------------ |
+| `context_explore`  | `miroctl items get-items --board-id ID --limit 50`                             |
 | `board_list_items` | `miroctl items get-items-within-frame --board-id ID --parent-item-id FRAME_ID` |
-| `doc_get` | No equivalent — inform user |
-| `table_list_rows` | No equivalent — inform user |
-| `diagram_create` | No equivalent — inform user |
+| `doc_get`          | No equivalent — inform user                                                    |
+| `table_list_rows`  | No equivalent — inform user                                                    |
+| `diagram_create`   | No equivalent — inform user                                                    |
 
 ## Gotchas
 
