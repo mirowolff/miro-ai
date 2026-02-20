@@ -22,6 +22,7 @@ agent-browser pdf /tmp/page.pdf                # Save as PDF
 ```
 
 **Always wait after page load before screenshotting:**
+
 ```bash
 agent-browser open <url>
 agent-browser wait 1000        # Wait 1 second for animations/transitions
@@ -41,6 +42,7 @@ agent-browser snapshot -s "#main-content" # Scope to selector
 ```
 
 Use refs from snapshot in subsequent commands:
+
 ```bash
 agent-browser click @e5
 agent-browser fill @e12 "text"
@@ -126,12 +128,12 @@ agent-browser set media [dark|light]
 
 ## Global Options
 
-| Flag | Description |
-|------|-------------|
-| `--session <name>` | Use specific browser session |
-| `--headed` | Run in headed mode (visible browser) |
-| `--json` | Output as JSON |
-| `--full, -f` | Full page capture (screenshots/pdf) |
+| Flag               | Description                          |
+| ------------------ | ------------------------------------ |
+| `--session <name>` | Use specific browser session         |
+| `--headed`         | Run in headed mode (visible browser) |
+| `--json`           | Output as JSON                       |
+| `--full, -f`       | Full page capture (screenshots/pdf)  |
 
 ## Common Pattern: Screenshot + Upload to Miro
 
@@ -144,9 +146,4 @@ agent-browser screenshot /tmp/capture.png
 # 2. Upload to board (use miroctl)
 IMG_ID=$(miroctl images create-image-item-using-local-file \
   --board-id $BID --file /tmp/capture.png | jq -r '.id')
-
-# 3. Move to frame (wait for API)
-sleep 2
-miroctl items update --board-id $BID --item-id $IMG_ID \
-  --data '{"parent":{"id":"FRAME_ID"}}'
 ```
